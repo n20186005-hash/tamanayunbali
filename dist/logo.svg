@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 88" role="img" aria-labelledby="title desc">
+  <title id="title">Pura Taman Ayun</title>
+  <desc id="desc">Simbol meru bertingkat dan aliran air</desc>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M45 10 29 20h32L45 10Zm0 12L24 34h42L45 22Zm0 14L18 50h54L45 36Zm0 16L12 67h66L45 52Z" fill="#20251f" stroke="#20251f" stroke-width="2"/>
+    <path d="M12 74c9-5 18-5 27 0s18 5 27 0 18-5 27 0" stroke="#914733" stroke-width="4"/>
+    <path d="M106 27h2v34h-2z" stroke="#c99b4c" stroke-width="2"/>
+  </g>
+  <text x="122" y="39" fill="#20251f" font-family="Georgia,serif" font-size="25" font-weight="700">Taman Ayun</text>
+  <text x="122" y="61" fill="#6f3529" font-family="Arial,sans-serif" font-size="11" letter-spacing="3.1">PURA AIR KERAJAAN · MENGWI</text>
+</svg>
