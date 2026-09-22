@@ -3,8 +3,8 @@ import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
 // Isi domain produksi hanya pada konstanta SITE di bawah.
-// Biarkan kosong selama domain belum ditetapkan. Build tetap valid tanpa URL placeholder.
-const SITE = '';
+// Bila diisi, canonical / Open Graph URL absolut, hreflang, dan sitemap otomatis terbit.
+const SITE = 'https://tamanayunbali.com';
 
 export default defineConfig({
   site: SITE || undefined,

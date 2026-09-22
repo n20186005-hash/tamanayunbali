@@ -1,2 +1,5 @@
 User-agent: *
 Allow: /
+
+Host: tamanayunbali.com
+Sitemap: https://tamanayunbali.com/sitemap-index.xml

@@ -6,6 +6,9 @@ const absoluteOgImage = Astro.site ? new URL('/images/og.webp', Astro.site).href
 const mapLink = 'https://maps.app.goo.gl/CA3f8Smjrz2yFwmv9';
 const mapEmbed = 'https://www.google.com/maps?q=Pura+Taman+Ayun,+Jl.+Ayodya+No.10,+Mengwi,+Bali+80351&output=embed&hl=id&region=ID';
 
+// Format nama situs SEO: "Nama Objek + Kota + Panduan Wisata".
+const SITE_NAME = 'Pura Taman Ayun (Taman Ayun Temple) Bali — Panduan Wisata';
+
 const faqs = [
   {
     q: 'Berapa lama waktu yang ideal untuk mengunjungi Pura Taman Ayun?',
@@ -87,12 +90,15 @@ const faqLd = {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#20251f" />
-    <title>Pura Taman Ayun Mengwi — Pura Air Kerajaan di Bali</title>
-    <meta name="description" content="Panduan berkunjung ke Pura Taman Ayun di Mengwi, Bali: sejarah, arsitektur meru, tiket, jam buka, parkir, transportasi, kuliner, tempat sekitar, peta, dan FAQ." />
+    <title>{SITE_NAME} | Tiket, Jam Buka &amp; Transportasi</title>
+    <meta name="description" content="Panduan berkunjung ke Pura Taman Ayun (Taman Ayun Temple) di Mengwi, Bali: tiket masuk, jam buka, sejarah, transportasi, foto, peta, dan FAQ bagi wisatawan." />
     {siteUrl && <link rel="canonical" href={siteUrl.href} />}
+    {siteUrl && <link rel="alternate" hreflang="id" href={siteUrl.href} />}
+    {siteUrl && <link rel="alternate" hreflang="x-default" href={siteUrl.href} />}
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="id_ID" />
-    <meta property="og:title" content="Pura Taman Ayun Mengwi — Air, Meru, dan Warisan Kerajaan" />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:title" content={SITE_NAME} />
     <meta property="og:description" content="Panduan lokal untuk menjelajahi pura air kerajaan Mengwi, taman, kolam, meru, dan jejak sistem subak Bali." />
     {siteUrl && <meta property="og:url" content={siteUrl.href} />}
     {absoluteOgImage && <meta property="og:image" content={absoluteOgImage} />}

@@ -43,17 +43,17 @@ Konfigurasi `wrangler.jsonc` menggunakan Static Assets Workers dan direktori `./
 Domain hanya diatur di **satu tempat**: konstanta `SITE` di `astro.config.mjs`.
 
 ```js
-const SITE = '';
+const SITE = 'https://tamanayunbali.com';
 ```
 
-Biarkan kosong jika domain belum ditetapkan. Dalam keadaan ini:
+`SITE` saat ini sudah berisi origin produksi (tamanayunbali.com), sehingga build menerbitkan:
 
-- build tetap berjalan;
-- canonical / Open Graph URL absolut tidak diterbitkan;
-- URL pada JSON-LD hanya ditambahkan jika `Astro.site` tersedia;
-- integrasi sitemap tidak dijalankan, sehingga tidak ada URL placeholder.
+- canonical + Open Graph URL absolut (`https://tamanayunbali.com/`);
+- hreflang `id` dan `x-default`;
+- URL absolut pada JSON-LD (`TouristAttraction` / `LocalBusiness` / `FAQPage`);
+- sitemap otomatis (`sitemap-index.xml`) yang diacu oleh `public/robots.txt`.
 
-Setelah domain tersedia, isi `SITE` dengan origin produksi lalu build ulang. `@astrojs/sitemap` akan menghasilkan sitemap otomatis.
+Bila domain berganti, cukup ubah nilai `SITE` lalu build ulang.
 
 ## Peta
 
