@@ -1,6 +1,6 @@
 # Pura Taman Ayun — Mengwi, Bali
 
-Situs satu halaman berbahasa Indonesia untuk Pura Taman Ayun, dibangun khusus dengan Astro + Tailwind CSS + TypeScript dan ditujukan untuk deployment sebagai Cloudflare Worker static assets.
+Panduan berbahasa Indonesia dengan halaman privasi, ketentuan dan pengaturan kuki untuk Pura Taman Ayun, dibangun khusus dengan Astro + Tailwind CSS + TypeScript dan ditujukan untuk deployment sebagai Cloudflare Worker static assets.
 
 ## Versi terkunci
 
@@ -50,7 +50,7 @@ const SITE = 'https://tamanayunbali.com';
 
 - canonical + Open Graph URL absolut (`https://tamanayunbali.com/`);
 - hreflang `id` dan `x-default`;
-- URL absolut pada JSON-LD (`TouristAttraction` / `LocalBusiness` / `FAQPage`);
+- URL absolut pada JSON-LD (`TouristAttraction` / `FAQPage`);
 - sitemap otomatis (`sitemap-index.xml`) yang diacu oleh `public/robots.txt`.
 
 Bila domain berganti, cukup ubah nilai `SITE` lalu build ulang.
@@ -65,7 +65,7 @@ Semua foto destinasi berada di `public/images/` dalam format WebP dan tidak di-h
 
 ## GA4
 
-Measurement ID: `G-HXM22WWPKP`.
+Measurement ID: `G-HXM22WWPKP`. Skrip hanya dimuat setelah pilihan eksplisit pada banner atau `/cookies/`. Penyimpanan yang diblokir tidak dianggap sebagai izin dan penolakan segera menonaktifkan pengukuran berikutnya.
 
 ## Pemeriksaan pengiriman
 
@@ -85,3 +85,9 @@ Lalu periksa placeholder/skrip ilegal:
 ```
 
 Jika `SITE` masih kosong, sitemap memang tidak dibuat. Jika `SITE` sudah berisi domain produksi, periksa `dist/sitemap-*.xml` dan pastikan hanya URL domain produksi yang muncul serta tidak ada `lastmod` buatan.
+
+## Sumber dan batas operasional
+
+Catatan sejarah Badung (1634) dan ringkasan UNESCO (abad ke-18) ditampilkan dengan atribusi terpisah; tidak dianggap sebagai penanggalan yang sama untuk semua bangunan. Taman Ayun adalah komponen Lanskap Budaya Bali yang dicatat UNESCO pada 2012. Harga tiket, akses halaman suci dan peminjaman busana belum terverifikasi. Maps diperiksa 19 Oktober 2026: 08.00–18.15 setiap hari, 4,6 dari 10.152 ulasan; cuplikan ini bukan jaminan akses atau layanan saat ini.
+
+Root Worker menormalkan HTTP/www ke HTTPS domain utama, memakai binding ASSETS dan mempertahankan 404/noindex. Aturan sumber URL absolut di `_redirects` telah diganti dengan Worker. Project `tamanayunbali` dipetakan dari check resmi Cloudflare pada base commit.

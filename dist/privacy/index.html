@@ -1,0 +1,33 @@
+<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Kebijakan Privasi — Taman Ayun Mengwi</title><meta name="description" content="Kebijakan Privasi untuk panduan independen Pura Taman Ayun."><link rel="canonical" href="https://tamanayunbali.com/privacy/"><link rel="icon" href="/favicon.svg"><meta property="og:title" content="Kebijakan Privasi — Taman Ayun"><meta property="og:description" content="Kebijakan Privasi untuk panduan independen Pura Taman Ayun."><meta property="og:url" content="https://tamanayunbali.com/privacy/"><meta property="og:type" content="website"><meta property="og:image" content="https://tamanayunbali.com/images/og.webp"><link rel="stylesheet" href="/_astro/global.B3HsvwSy.css"></head><body><main class="policy-shell"><nav class="policy-nav" aria-label="Navigasi kebijakan"><a href="/">Panduan Taman Ayun</a><a href="/privacy/">Privasi</a><a href="/terms/">Ketentuan</a><a href="/cookies/">Kuki</a></nav><h1>Kebijakan Privasi</h1><section><h2>Informasi yang digunakan</h2><p>Situs statis ini tidak menyediakan akun, formulir pemesanan atau formulir kontak. Infrastruktur penyajian dapat menerima data teknis seperti alamat IP, peramban dan halaman yang diminta. Penyimpanan lokal digunakan untuk mencoba mengingat pilihan analitik.</p></section><section><h2>Layanan pihak ketiga</h2><p>Google Maps disematkan untuk orientasi lokasi. Google Analytics hanya dimuat setelah pilihan analitik diizinkan. Layanan pihak ketiga menerapkan kebijakan mereka sendiri.</p></section><section><h2>Pilihan Anda</h2><p>Analitik tidak aktif secara bawaan. Anda dapat menolak atau mengubah pilihan melalui Pengaturan Kuki. Pembatasan penyimpanan peramban dapat mencegah pilihan diingat untuk kunjungan berikutnya.</p></section></main><div class="consent-box" data-consent-banner hidden role="region" aria-label="Pilihan analitik"><p>Google Analytics hanya diaktifkan setelah persetujuan Anda. Pilihan dicoba disimpan pada perangkat ini.</p><div class="consent-actions"><button type="button" data-consent="denied">Tolak analitik</button><button type="button" data-consent="granted">Izinkan analitik</button><a href="/cookies/">Pengaturan kuki</a></div><p data-consent-status role="status" aria-live="polite"></p></div><script>
+(() => {
+  const GA_ID = 'G-HXM22WWPKP';
+  const key = 'taman-ayun-analytics';
+  const banner = document.querySelector('[data-consent-banner]');
+  let choice = null;
+  try { choice = localStorage.getItem(key); } catch {}
+  const apply = enabled => {
+    window['ga-disable-' + GA_ID] = !enabled;
+    if (!enabled || document.querySelector('[data-ga4]')) return;
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ window.dataLayer.push(arguments); }
+    window.gtag = gtag;
+    gtag('js', new Date()); gtag('config', GA_ID, { anonymize_ip: true });
+    const script = document.createElement('script'); script.async = true;
+    script.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+    script.dataset.ga4 = 'consented'; document.head.appendChild(script);
+  };
+  apply(choice === 'granted');
+  if (choice !== 'granted' && choice !== 'denied' && banner) banner.hidden = false;
+  const current = document.querySelector('[data-current-choice]');
+  if (current) current.textContent = choice === 'granted' ? 'Analitik diizinkan.' : 'Analitik tidak diaktifkan.';
+  document.querySelectorAll('[data-consent]').forEach(button => button.addEventListener('click', () => {
+    const enabled = button.dataset.consent === 'granted';
+    apply(enabled);
+    let saved = false;
+    try { localStorage.setItem(key, enabled ? 'granted' : 'denied'); saved = true; } catch {}
+    if (banner) banner.hidden = saved;
+    if (current) current.textContent = enabled ? 'Analitik diizinkan pada halaman ini.' : 'Analitik dinonaktifkan pada halaman ini.';
+    document.querySelectorAll('[data-consent-status]').forEach(status => { status.textContent = saved ? 'Pilihan disimpan.' : 'Pilihan berlaku pada halaman ini, tetapi tidak dapat disimpan untuk kunjungan berikutnya.'; });
+  }));
+})();
+</script></body></html>

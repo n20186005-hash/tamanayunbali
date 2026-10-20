@@ -1,9 +1,12 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "taman-ayun-mengwi",
+  "name": "tamanayunbali",
+  "main": "src/worker.ts",
   "compatibility_date": "2026-08-04",
   "assets": {
     "directory": "./dist",
+    "binding": "ASSETS",
+    "run_worker_first": true,
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "404-page"
   }

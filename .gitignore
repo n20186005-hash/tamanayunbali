@@ -1,1 +1,5 @@
 node_modules
+
+.astro/
+.wrangler/
+.DS_Store

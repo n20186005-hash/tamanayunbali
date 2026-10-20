@@ -8,7 +8,7 @@ const SITE = 'https://tamanayunbali.com';
 
 export default defineConfig({
   site: SITE || undefined,
-  integrations: SITE ? [sitemap()] : [],
+  integrations: SITE ? [sitemap({ filter: (page) => !page.endsWith("/404/") })] : [],
   vite: {
     plugins: [tailwindcss()],
   },
