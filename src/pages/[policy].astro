@@ -1,0 +1,22 @@
+---
+import '../styles/global.css';
+import Consent from '../components/Consent.astro';
+export function getStaticPaths() { return ['privacy', 'terms', 'cookies'].map(policy => ({ params: { policy } })); }
+const kind = Astro.params.policy;
+const pages = {
+  privacy: { title: 'Kebijakan Privasi', sections: [
+    ['Informasi yang digunakan', 'Situs statis ini tidak menyediakan akun, formulir pemesanan atau formulir kontak. Infrastruktur penyajian dapat menerima data teknis seperti alamat IP, peramban dan halaman yang diminta. Penyimpanan lokal digunakan untuk mencoba mengingat pilihan analitik.'],
+    ['Layanan pihak ketiga', 'Google Maps disematkan untuk orientasi lokasi. Google Analytics hanya dimuat setelah pilihan analitik diizinkan. Layanan pihak ketiga menerapkan kebijakan mereka sendiri.'],
+    ['Pilihan Anda', 'Analitik tidak aktif secara bawaan. Anda dapat menolak atau mengubah pilihan melalui Pengaturan Kuki. Pembatasan penyimpanan peramban dapat mencegah pilihan diingat untuk kunjungan berikutnya.'] ] },
+  terms: { title: 'Ketentuan Penggunaan', sections: [
+    ['Panduan independen', 'Situs ini adalah panduan informasi pengunjung pihak ketiga. Situs tidak mewakili pengelola pura, pemerintah atau UNESCO, serta tidak menjual tiket atau menerima pemesanan.'],
+    ['Akurasi informasi', 'Jam, biaya, akses ke area suci, aturan busana, transportasi dan fasilitas dapat berubah. Konfirmasikan ketentuan dengan petugas atau sumber resmi sebelum berkunjung. Informasi bertanggal bukan jaminan operasional saat ini.'],
+    ['Penggunaan dan kredit', 'Hormati arahan petugas, kegiatan persembahyangan, pembatas dan hak pengunjung lain. Foto mempertahankan kredit serta lisensi sumber yang dicantumkan; jangan menganggap sumber foto mendukung situs ini.'] ] },
+  cookies: { title: 'Pengaturan Kuki', sections: [
+    ['Penyimpanan lokal', 'Situs mencoba menyimpan pilihan analitik pada perangkat ini. Penyimpanan yang diblokir tidak menghentikan pilihan untuk halaman saat ini, tetapi pilihan mungkin perlu diulang pada kunjungan berikutnya.'],
+    ['Analitik opsional', 'Google Analytics hanya diaktifkan setelah izin eksplisit. Menolak menonaktifkan pengukuran berikutnya pada halaman ini; data yang sudah dikirim tidak ditarik kembali.'] ] }
+};
+const page = pages[kind as keyof typeof pages];
+const canonical = new URL(`/${kind}/`, Astro.site).href;
+---
+<!doctype html><html lang="id"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>{page.title} — Taman Ayun Mengwi</title><meta name="description" content={`${page.title} untuk panduan independen Pura Taman Ayun.`} /><link rel="canonical" href={canonical} /><link rel="icon" href="/favicon.svg" /><meta property="og:title" content={`${page.title} — Taman Ayun`} /><meta property="og:description" content={`${page.title} untuk panduan independen Pura Taman Ayun.`} /><meta property="og:url" content={canonical} /><meta property="og:type" content="website" /><meta property="og:image" content={new URL('/images/og.webp', Astro.site).href} /></head><body><main class="policy-shell"><nav class="policy-nav" aria-label="Navigasi kebijakan"><a href="/">Panduan Taman Ayun</a><a href="/privacy/">Privasi</a><a href="/terms/">Ketentuan</a><a href="/cookies/">Kuki</a></nav><h1>{page.title}</h1>{page.sections.map(([title, text]) => <section><h2>{title}</h2><p>{text}</p></section>)}{kind === 'cookies' && <section><h2>Pilihan analitik</h2><p data-current-choice></p><div class="consent-actions"><button type="button" data-consent="denied">Tolak analitik</button><button type="button" data-consent="granted">Izinkan analitik</button></div><p data-consent-status role="status" aria-live="polite"></p></section>}</main><Consent /></body></html>

@@ -1,10 +1,11 @@
 ---
 import '../styles/global.css';
+import Consent from '../components/Consent.astro';
 
 const siteUrl = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefined;
 const absoluteOgImage = Astro.site ? new URL('/images/og.webp', Astro.site).href : undefined;
 const mapLink = 'https://maps.app.goo.gl/CA3f8Smjrz2yFwmv9';
-const mapEmbed = 'https://www.google.com/maps?q=Pura+Taman+Ayun,+Jl.+Ayodya+No.10,+Mengwi,+Bali+80351&output=embed&hl=id&region=ID';
+const mapEmbed = 'https://www.google.com/maps?q=-8.5418425,115.1724843&output=embed&hl=id&region=ID';
 
 // Format nama situs SEO: "Nama Objek + Kota + Panduan Wisata".
 const SITE_NAME = 'Pura Taman Ayun (Taman Ayun Temple) Bali — Panduan Wisata';
@@ -19,22 +20,23 @@ const faqs = [
     a: 'Gunakan pakaian yang sopan dan menghormati tempat ibadah. Tutupi bahu dan lutut; ikuti arahan petugas mengenai penggunaan kamen atau selendang di area tertentu.'
   },
   {
-    q: 'Kapan waktu terbaik datang?',
-    a: 'Pagi hari umumnya paling nyaman: udara lebih sejuk, cahaya lebih lembut, dan waktu kunjungan lebih leluasa sebelum siang.'
+    q: 'Kapan jam buka Taman Ayun?',
+    a: 'Google Maps diperiksa 19 Oktober 2026 mencantumkan 08.00–18.15 setiap hari. Ini cuplikan listing, bukan jaminan akses hari ini, semua halaman pura atau kegiatan. Konfirmasikan kepada petugas, terutama saat upacara.'
   },
   {
     q: 'Apakah tersedia area parkir?',
-    a: 'Tersedia area parkir di sekitar pintu masuk. Tarif dan pengaturan dapat berubah, jadi siapkan uang kecil dan ikuti petunjuk petugas setempat.'
+    a: 'Tanyakan kepada petugas apakah parkir tersedia, lokasi, kapasitas dan tarifnya pada hari kunjungan. Ketersediaan serta pengaturan tidak dijamin oleh panduan ini.'
   },
   {
     q: 'Apakah tiket bisa berubah?',
-    a: 'Ya. Tarif yang ditampilkan adalah acuan perencanaan dan dapat berubah. Konfirmasikan harga terbaru di loket ketika berkunjung.'
-  }
+    a: 'Harga saat ini, kategori usia dan ketentuan WNI/WNA belum terverifikasi. Tanyakan jumlah yang harus dibayar serta apa yang termasuk di loket; panduan ini tidak menjual tiket.'
+  },
+  { q: 'Apakah pengunjung boleh masuk halaman suci dan meminjam busana?', a: 'Izin masuk area suci, ketentuan busana dan peminjaman kamen atau selendang belum dikonfirmasi. Tanyakan kepada petugas, hormati kegiatan persembahyangan dan jangan melewati pembatas. Kalender upacara bukan jadwal pertunjukan harian.' }
 ];
 
 const attractionLd = {
   '@context': 'https://schema.org',
-  '@type': ['TouristAttraction', 'LocalBusiness'],
+  '@type': 'TouristAttraction',
   name: 'Pura Taman Ayun',
   alternateName: 'Taman Ayun Temple',
   description: 'Pura air kerajaan Mengwi di Bali, dikelilingi kolam dan taman dengan deretan meru bertingkat, bagian dari Lanskap Budaya Provinsi Bali yang diakui UNESCO.',
@@ -51,24 +53,10 @@ const attractionLd = {
   },
   geo: {
     '@type': 'GeoCoordinates',
-    latitude: -8.54185,
-    longitude: 115.17249
-  },
-  openingHoursSpecification: [
-    {
-      '@type': 'OpeningHoursSpecification',
-      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-      opens: '08:00',
-      closes: '18:15'
-    }
-  ],
-  aggregateRating: {
-    '@type': 'AggregateRating',
-    ratingValue: '4.6',
-    reviewCount: '9732',
-    bestRating: '5'
-  },
-  priceRange: 'Rp'
+    latitude: -8.5418425,
+    longitude: 115.1724843
+  }
+
 };
 
 const faqLd = {
@@ -107,17 +95,9 @@ const faqLd = {
     <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png" />
     <link rel="icon" href="/favicon-16x16.png" sizes="16x16" type="image/png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
-    <script type="application/ld+json" set:html={JSON.stringify(attractionLd)}></script>
-    <script type="application/ld+json" set:html={JSON.stringify(faqLd)}></script>
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(attractionLd)}></script>
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(faqLd)}></script>
 
-    <!-- Google Analytics 4 — diminta secara eksplisit untuk situs ini. -->
-    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-HXM22WWPKP"></script>
-    <script is:inline>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-HXM22WWPKP');
-    </script>
   </head>
   <body>
     <header class="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-[#171c18]/88 text-[#fbf6ec] backdrop-blur-md">
@@ -132,7 +112,7 @@ const faqLd = {
             <span class="text-[10px] uppercase tracking-[.24em] text-[#d9cba9]">Mengwi · Bali</span>
           </span>
         </a>
-        <nav aria-label="Navigasi utama" class="hidden items-center gap-6 text-sm text-[#eee4d2] lg:flex">
+        <nav aria-label="Navigasi utama" class="main-nav flex flex-wrap items-center gap-6 text-sm text-[#eee4d2]">
           <a class="transition hover:text-white" href="#warisan">Warisan</a>
           <a class="transition hover:text-white" href="#kunjungan">Kunjungan</a>
           <a class="transition hover:text-white" href="#peta">Peta</a>
@@ -153,7 +133,7 @@ const faqLd = {
           <div class="grid w-full gap-10 lg:grid-cols-[1.2fr_.55fr] lg:items-end">
             <div class="max-w-4xl">
               <p class="mb-5 flex items-center gap-3 text-xs font-bold uppercase tracking-[.26em] text-[#e2c88c]"><span class="h-px w-10 bg-[#e2c88c]"></span>Pura air kerajaan Mengwi</p>
-              <h1 class="text-[clamp(3.4rem,9vw,8.8rem)] font-bold leading-[.8] tracking-[-.05em]">Taman<br /><span class="italic text-[#f0dfb6]">Ayun</span></h1>
+              <h1 class="text-[clamp(3.4rem,9vw,8.8rem)] font-bold leading-[.8] tracking-[-.05em]">Taman<br /><span class="italic text-[#f0dfb6]">Ayun</span><span class="mt-5 block font-sans text-2xl leading-tight tracking-normal">Temple · Mengwi, Bali</span></h1>
               <p class="mt-8 max-w-2xl text-base leading-7 text-[#eee9de] sm:text-lg">Di balik parit air dan taman yang tenang, atap-atap <em>meru</em> menjulang seperti siluet gunung. Inilah pura keluarga Kerajaan Mengwi—sebuah lanskap suci tempat arsitektur, air, dan filosofi Bali bertemu.</p>
               <div class="mt-8 flex flex-wrap gap-3">
                 <a href="#kunjungan" class="rounded-full bg-[#f3ead8] px-6 py-3 text-sm font-bold text-[#20251f] transition hover:bg-white">Rencanakan kunjungan</a>
@@ -164,8 +144,8 @@ const faqLd = {
               <p class="mb-5 text-[10px] font-bold uppercase tracking-[.26em] text-[#e2c88c]">Sekilas</p>
               <dl class="grid grid-cols-2 gap-x-4 gap-y-5 lg:grid-cols-1">
                 <div><dt class="text-white/55">Alamat</dt><dd class="mt-1 font-semibold">Jl. Ayodya No.10, Mengwi</dd></div>
-                <div><dt class="text-white/55">Jam tercantum</dt><dd class="mt-1 font-semibold">08.00–18.15 · setiap hari</dd></div>
-                <div><dt class="text-white/55">Peringkat Google</dt><dd class="mt-1 font-semibold">4,6 / 5 · dapat berubah</dd></div>
+                <div><dt class="text-white/55">Jam tercantum</dt><dd class="mt-1 font-semibold">08.00–18.15 · Maps 19 Oktober 2026</dd></div>
+                <div><dt class="text-white/55">Peringkat Google</dt><dd class="mt-1 font-semibold">4,6 / 5 · 10.152 ulasan · Maps 19 Oktober 2026</dd></div>
                 <div><dt class="text-white/55">Karakter</dt><dd class="mt-1 font-semibold">Pura · taman · kolam · meru</dd></div>
               </dl>
             </aside>
@@ -177,7 +157,7 @@ const faqLd = {
       <section class="kamen-grid border-b border-[#20251f]/10 bg-[#f3ead8]">
         <div class="mx-auto grid max-w-7xl grid-cols-2 divide-x divide-y divide-[#20251f]/12 px-5 sm:grid-cols-4 sm:divide-y-0 lg:px-8">
           <div class="py-7 pr-4"><p class="display text-3xl font-bold">1634</p><p class="mt-1 text-xs uppercase tracking-[.14em] text-[#6f3529]">tahun pendirian yang dicatat Badung</p></div>
-          <div class="px-4 py-7"><p class="display text-3xl font-bold">UNESCO</p><p class="mt-1 text-xs uppercase tracking-[.14em] text-[#6f3529]">bagian Lanskap Budaya Bali</p></div>
+          <div class="px-4 py-7"><p class="display text-3xl font-bold">UNESCO</p><p class="mt-1 text-xs uppercase tracking-[.14em] text-[#6f3529]">komponen Lanskap Budaya Bali · 2012</p></div>
           <div class="px-4 py-7"><p class="display text-3xl font-bold">Meru</p><p class="mt-1 text-xs uppercase tracking-[.14em] text-[#6f3529]">atap bertingkat khas kompleks suci</p></div>
           <div class="py-7 pl-4"><p class="display text-3xl font-bold">Subak</p><p class="mt-1 text-xs uppercase tracking-[.14em] text-[#6f3529]">air, ritual, pertanian, kebersamaan</p></div>
         </div>
@@ -188,18 +168,18 @@ const faqLd = {
           <div>
             <p class="text-xs font-bold uppercase tracking-[.24em] text-[#914733]">Warisan yang hidup</p>
             <h2 class="mt-5 text-5xl font-bold leading-[.96] tracking-[-.04em] sm:text-6xl">Air bukan sekadar latar.</h2>
-            <p class="mt-7 max-w-lg text-lg leading-8 text-[#455047]">Pura Taman Ayun memperlihatkan bagaimana ruang suci Bali terhubung dengan air dan tatanan agraris. UNESCO menempatkannya dalam Lanskap Budaya Provinsi Bali—representasi sistem <em>subak</em> dan filosofi Tri Hita Karana.</p>
+            <p class="mt-7 max-w-lg text-lg leading-8 text-[#455047]">Pura Taman Ayun memperlihatkan bagaimana ruang suci Bali terhubung dengan air dan tatanan agraris. Taman Ayun adalah salah satu komponen Lanskap Budaya Provinsi Bali—sistem <em>subak</em> dan filosofi Tri Hita Karana—yang masuk Daftar Warisan Dunia UNESCO pada 2012. Pengakuan ini bukan penghargaan terpisah bagi seluruh Bali atau hanya pura ini.</p>
           </div>
           <div class="grid gap-5 sm:grid-cols-2">
             <article class="border-t-4 border-[#405740] bg-[#dce9e4] p-7 sm:translate-y-12">
               <span class="display text-6xl italic text-[#405740]/28">01</span>
               <h3 class="mt-8 text-2xl font-bold">Pura kerajaan</h3>
-              <p class="mt-4 leading-7 text-[#425047]">Pemerintah Kabupaten Badung mencatat pembangunan Pura Taman Ayun pada 1634 oleh penguasa Mengwi. Kompleks ini menjadi pura keluarga kerajaan sekaligus penanda penting sejarah Mengwi.</p>
+              <p class="mt-4 leading-7 text-[#425047]">Dinas Kebudayaan Badung mengaitkan pendirian dengan kerajaan Mengwi pada 1634. Ringkasan UNESCO menyebut Taman Ayun sebagai pura air kerajaan abad ke-18. Sumber memakai penanggalan berbeda; panduan ini tidak menyamakan pendirian dengan usia seluruh bangunan yang tampak sekarang.</p>
             </article>
             <article class="border-t-4 border-[#914733] bg-[#f3ead8] p-7">
               <span class="display text-6xl italic text-[#914733]/25">02</span>
               <h3 class="mt-8 text-2xl font-bold">Meru dan halaman berlapis</h3>
-              <p class="mt-4 leading-7 text-[#4e493f]">Deretan meru dengan jumlah tingkat berbeda membentuk ritme vertikal yang khas. Pengunjung mengamati kompleks sakral dari jalur yang menjaga batas antara ruang kunjungan dan area pemujaan.</p>
+              <p class="mt-4 leading-7 text-[#4e493f]">Deretan meru dengan jumlah tingkat berbeda membentuk ritme vertikal yang khas. Amati kompleks hanya dari jalur yang diizinkan petugas dan hormati batas antara ruang kunjungan serta area pemujaan.</p>
             </article>
             <article class="border-t-4 border-[#c99b4c] bg-[#20251f] p-7 text-[#f7efe0] sm:col-span-2 sm:ml-24">
               <div class="grid gap-5 sm:grid-cols-[.35fr_1fr] sm:items-end">
@@ -235,26 +215,20 @@ const faqLd = {
         <div class="mx-auto max-w-7xl px-5 lg:px-8">
           <div class="flex flex-col gap-5 border-b border-[#20251f]/15 pb-8 md:flex-row md:items-end md:justify-between">
             <div><p class="text-xs font-bold uppercase tracking-[.25em] text-[#914733]">Rencana kunjungan</p><h2 class="mt-4 text-5xl font-bold tracking-[-.04em] sm:text-6xl">Praktis, tanpa mengurangi rasa hormat.</h2></div>
-            <p class="max-w-md text-sm leading-6 text-[#5d5a51]">Jam, tarif, dan pengaturan lokal dapat berubah. Gunakan angka di bawah sebagai acuan perencanaan dan konfirmasi saat tiba.</p>
+            <p class="max-w-md text-sm leading-6 text-[#5d5a51]">Jam, tarif, dan pengaturan lokal dapat berubah. Gunakan informasi bertanggal di bawah sebagai persiapan dan konfirmasi ketentuan saat tiba.</p>
           </div>
 
           <div class="mt-10 grid gap-4 lg:grid-cols-3">
             <article class="bg-[#fbf6ec] p-7 lg:row-span-2">
               <p class="text-xs font-bold uppercase tracking-[.2em] text-[#6f3529]">Tiket / biaya</p>
-              <div class="mt-8 space-y-5">
-                <div class="flex items-baseline justify-between gap-4 border-b border-[#20251f]/10 pb-4"><span>WNI dewasa</span><strong class="display text-2xl">Rp15.000</strong></div>
-                <div class="flex items-baseline justify-between gap-4 border-b border-[#20251f]/10 pb-4"><span>WNI anak</span><strong class="display text-2xl">Rp10.000</strong></div>
-                <div class="flex items-baseline justify-between gap-4 border-b border-[#20251f]/10 pb-4"><span>WNA dewasa</span><strong class="display text-2xl">Rp30.000</strong></div>
-                <div class="flex items-baseline justify-between gap-4"><span>WNA anak</span><strong class="display text-2xl">Rp15.000</strong></div>
-              </div>
-              <p class="mt-8 text-xs leading-5 text-[#6c695f]">Acuan tarif dari Indonesia.travel. Harga aktual, kategori usia, atau paket fasilitas dapat berubah di loket.</p>
+              <p class="display mt-8 text-3xl font-bold">Konfirmasi di loket</p><p class="mt-6 leading-7">Harga terkini, kategori usia, ketentuan WNI/WNA dan fasilitas yang termasuk belum terverifikasi. Tanyakan sebelum membeli; jangan memakai daftar harga lama sebagai kepastian.</p>
             </article>
 
             <article class="bg-[#405740] p-7 text-white">
               <p class="text-xs font-bold uppercase tracking-[.2em] text-[#dce9e4]">Jam buka tercantum</p>
               <p class="display mt-7 text-5xl font-bold">08.00</p>
               <p class="display text-3xl italic text-[#dbe3d7]">hingga 18.15</p>
-              <p class="mt-6 text-sm text-white/70">Setiap hari menurut listing Google saat riset. Upacara atau kebijakan lokal dapat memengaruhi akses.</p>
+              <p class="mt-6 text-sm text-white/70">Listing Google Maps diperiksa 19 Oktober 2026, setiap hari. Ini bukan jaminan akses semua area; upacara atau kebijakan lokal dapat memengaruhi kunjungan.</p>
             </article>
 
             <article class="bg-[#dce9e4] p-7">
@@ -271,8 +245,8 @@ const faqLd = {
 
             <article class="bg-[#20251f] p-7 text-white">
               <p class="text-xs font-bold uppercase tracking-[.2em] text-[#d4ad65]">Parkir</p>
-              <p class="display mt-7 text-4xl font-bold">Dekat pintu masuk</p>
-              <p class="mt-4 text-sm leading-6 text-white/70">Area parkir tersedia di sekitar kompleks. Tarif dapat berubah; ikuti petugas dan siapkan uang kecil.</p>
+              <p class="display mt-7 text-4xl font-bold">Tanyakan lokasi</p>
+              <p class="mt-4 text-sm leading-6 text-white/70">Tanyakan ketersediaan, lokasi yang diizinkan, kapasitas dan biaya parkir kepada petugas. Jangan mengandalkan tempat kosong sebelum dikonfirmasi.</p>
             </article>
           </div>
         </div>
@@ -301,10 +275,10 @@ const faqLd = {
               <p class="text-xs font-bold uppercase tracking-[.25em] text-[#405740]">Arah & transportasi</p>
               <h2 class="mt-4 text-5xl font-bold tracking-[-.04em]">Menuju Mengwi.</h2>
               <div class="mt-8 space-y-7 text-[#475448]">
-                <div class="border-t border-[#405740]/25 pt-5"><h3 class="text-xl font-bold">Dari Bandara Ngurah Rai (DPS)</h3><p class="mt-2 leading-7">Indonesia.travel memperkirakan sekitar 45–60 menit dari Bandara Internasional I Gusti Ngurah Rai ke Mengwi, bergantung kepadatan lalu lintas di Kuta, Jimbaran, dan Denpasar. Pilihan praktis: taksi bandara, taksi daring, atau mobil sewaan dengan pengemudi agar bisa menggabungkan perjalanan dengan titik lain di Bali.</p></div>
-                <div class="border-t border-[#405740]/25 pt-5"><h3 class="text-xl font-bold">Dari Denpasar / Ubud</h3><p class="mt-2 leading-7">Indonesia.travel memperkirakan sekitar 1 jam dengan mobil atau taksi, bergantung titik berangkat dan kondisi lalu lintas. Kendaraan sewaan dengan pengemudi juga praktis untuk menggabungkan beberapa tujuan.</p></div>
+                <div class="border-t border-[#405740]/25 pt-5"><h3 class="text-xl font-bold">Dari Bandara Ngurah Rai (DPS)</h3><p class="mt-2 leading-7">Rencanakan kendaraan dari Bandara Internasional I Gusti Ngurah Rai menuju Mengwi melalui operator bandara atau penyedia transportasi yang Anda pilih. Waktu dan biaya bergantung titik jemput, rute, cuaca dan lalu lintas; konfirmasikan sebelum berangkat.</p></div>
+                <div class="border-t border-[#405740]/25 pt-5"><h3 class="text-xl font-bold">Dari Denpasar / Ubud</h3><p class="mt-2 leading-7">Gunakan perencana rute terkini dari titik berangkat di Denpasar atau Ubud. Konfirmasikan waktu, biaya dan opsi pulang kepada operator; tidak ada estimasi perjalanan tetap yang dijamin di sini.</p></div>
                 <div class="border-t border-[#405740]/25 pt-5"><h3 class="text-xl font-bold">Motor / mobil sewaan</h3><p class="mt-2 leading-7">Masukkan alamat lengkap Jl. Ayodya No.10, Mengwi. Jalan utama menuju Mengwi mudah diikuti, tetapi sisakan waktu ekstra pada jam padat.</p></div>
-                <div class="border-t border-[#405740]/25 pt-5"><h3 class="text-xl font-bold">Catatan akses</h3><p class="mt-2 leading-7">Listing Google saat riset menandai pintu masuk dan parkir sebagai tidak ramah kursi roda. Pengunjung yang memerlukan akses khusus sebaiknya mengonfirmasi kondisi terkini sebelum datang.</p></div>
+                <div class="border-t border-[#405740]/25 pt-5"><h3 class="text-xl font-bold">Catatan akses</h3><p class="mt-2 leading-7">Kondisi jalur, pintu masuk dan parkir untuk kebutuhan mobilitas khusus belum dikonfirmasi. Tanyakan rute yang dapat digunakan dan bantuan yang tersedia kepada petugas sebelum datang.</p></div>
               </div>
               <a href={mapLink} target="_blank" rel="noreferrer" class="mt-8 inline-flex items-center gap-2 rounded-full bg-[#20251f] px-6 py-3 text-sm font-bold text-white transition hover:bg-[#914733]">Buka di Google Maps <span aria-hidden="true">↗</span></a>
             </div>
@@ -321,8 +295,8 @@ const faqLd = {
           <div class="grid gap-12 lg:grid-cols-[.6fr_1.4fr]">
             <div><p class="text-xs font-bold uppercase tracking-[.25em] text-[#d4ad65]">Setelah dari pura</p><h2 class="mt-4 text-5xl font-bold leading-none">Mengwi masih punya cerita.</h2><p class="mt-6 max-w-md leading-7 text-white/65">Kombinasikan situs utama dengan rasa lokal, museum kecil, dan ritme pasar. Semua pilihan di bawah berada di kawasan Mengwi; jam dan operasional dapat berubah.</p></div>
             <div class="grid gap-5 md:grid-cols-2">
-              <article class="border border-white/15 p-7"><p class="text-[10px] font-bold uppercase tracking-[.2em] text-[#d4ad65]">Kuliner · dekat kompleks</p><h3 class="mt-5 text-3xl font-bold">Warung Sate Bu Rai</h3><p class="mt-3 leading-7 text-white/65">Pilihan warung Bali yang sangat dekat dari Taman Ayun. Cocok untuk makan sederhana setelah berkeliling.</p><p class="mt-5 text-sm font-semibold text-[#e9d4a6]">Jl. I Gusti Ketut Jelantik No.1</p></article>
-              <article class="border border-white/15 p-7"><p class="text-[10px] font-bold uppercase tracking-[.2em] text-[#d4ad65]">Kopi · santai</p><h3 class="mt-5 text-3xl font-bold">Greenbumi Cafe</h3><p class="mt-3 leading-7 text-white/65">Tempat rehat di kawasan Mengwi untuk kopi dan jeda yang lebih panjang sebelum melanjutkan perjalanan.</p><p class="mt-5 text-sm font-semibold text-[#e9d4a6]">Jl. Gulingan, Mengwitani</p></article>
+              <article class="border border-white/15 p-7"><p class="text-[10px] font-bold uppercase tracking-[.2em] text-[#d4ad65]">Kuliner · dekat kompleks</p><h3 class="mt-5 text-3xl font-bold">Warung & rumah makan</h3><p class="mt-3 leading-7 text-white/65">Cari pilihan makan sesuai kebutuhan diet, anggaran dan rute berjalan Anda. Periksa lokasi serta jam buka tanpa mengandalkan daftar usaha lama.</p><p class="mt-5 text-sm font-semibold text-[#e9d4a6]">Konfirmasi lokasi dan jam buka</p></article>
+              <article class="border border-white/15 p-7"><p class="text-[10px] font-bold uppercase tracking-[.2em] text-[#d4ad65]">Kopi · santai</p><h3 class="mt-5 text-3xl font-bold">Minuman & kebutuhan harian</h3><p class="mt-3 leading-7 text-white/65">Gunakan peta terkini untuk mencari tempat minum atau membeli kebutuhan perjalanan. Konfirmasikan jam dan akses masing-masing.</p><p class="mt-5 text-sm font-semibold text-[#e9d4a6]">Pilihan mandiri, tanpa peringkat</p></article>
               <article class="border border-white/15 p-7"><p class="text-[10px] font-bold uppercase tracking-[.2em] text-[#a7c5ab]">Budaya · museum</p><h3 class="mt-5 text-3xl font-bold">The Ogoh Ogoh Bali Museum</h3><p class="mt-3 leading-7 text-white/65">Museum kecil dekat Taman Ayun yang memperkenalkan figur ogoh-ogoh dan ekspresi budaya Bali.</p><p class="mt-5 text-sm font-semibold text-[#bcd4bf]">Jl. Ayodya No.1, Mengwi</p></article>
               <article class="border border-white/15 p-7"><p class="text-[10px] font-bold uppercase tracking-[.2em] text-[#a7c5ab]">Lokal · pasar</p><h3 class="mt-5 text-3xl font-bold">Pasar Mengwi</h3><p class="mt-3 leading-7 text-white/65">Lihat sisi sehari-hari Mengwi melalui pasar tradisional dan aktivitas warga di pusat kawasan.</p><p class="mt-5 text-sm font-semibold text-[#bcd4bf]">Jl. Rama, Mengwi</p></article>
             </div>
@@ -361,7 +335,7 @@ const faqLd = {
           <div class="grid gap-8 lg:grid-cols-[.7fr_1.3fr]">
             <div><p class="text-xs font-bold uppercase tracking-[.25em] text-[#914733]">Sumber & kredit</p><h2 class="mt-4 text-3xl font-bold">Dibuat dari sumber yang dapat ditelusuri.</h2></div>
             <div class="grid gap-6 text-sm leading-6 text-[#625e54] sm:grid-cols-2">
-              <div><strong class="text-[#20251f]">Informasi destinasi</strong><p class="mt-2">UNESCO World Heritage Centre; Indonesia.travel; Dinas Kebudayaan Kabupaten Badung; listing Google untuk alamat, jam, rating, dan fasilitas.</p></div>
+              <div><strong class="text-[#20251f]">Informasi destinasi</strong><p class="mt-2"><a href="https://whc.unesco.org/en/list/01194/">UNESCO: Lanskap Budaya Bali (2012)</a>; <a href="https://disbud.badungkab.go.id/pura-taman-ayun-260716135453">Dinas Kebudayaan Badung: struktur dan catatan 1634</a>; <a href="https://maps.app.goo.gl/CA3f8Smjrz2yFwmv9">Google Maps, diperiksa 19 Oktober 2026</a>. Perbedaan penanggalan sumber dijelaskan dalam teks; data operasional tetap perlu dikonfirmasi.</p></div>
               <div><strong class="text-[#20251f]">Foto</strong><p class="mt-2">Foto utama: Cindi CGJ, Wikimedia Commons, CC BY-SA 4.0. Foto meru, halaman, gerbang, jembatan, air mancur, dan taman: Anandajoti, Wikimedia Commons, CC BY-SA 4.0. Gambar dikompresi ke WebP tanpa hotlink.</p></div>
             </div>
           </div>
@@ -377,9 +351,10 @@ const faqLd = {
         </div>
         <div class="flex flex-col gap-4 pt-7 text-xs leading-5 text-white/45 md:flex-row md:items-end md:justify-between">
           <p class="max-w-2xl">Situs panduan independen dan tidak resmi; tidak mewakili pengelola Pura Taman Ayun, Pemerintah Kabupaten Badung, UNESCO, maupun lembaga resmi lainnya.</p>
-          <p>Hormati tempat suci · jaga kebersihan · ikuti arahan lokal</p>
+          <nav aria-label="Kebijakan situs" class="flex flex-wrap gap-5"><a href="/privacy/">Privasi</a><a href="/terms/">Ketentuan</a><a href="/cookies/">Pengaturan kuki</a></nav>
         </div>
       </div>
     </footer>
+    <Consent />
   </body>
 </html>
