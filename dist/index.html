@@ -3,31 +3,47 @@
   const GA_ID = 'G-HXM22WWPKP';
   const key = 'taman-ayun-analytics';
   const banner = document.querySelector('[data-consent-banner]');
+  const vetoKey = key + '-denied';
   let choice = null;
-  try { choice = localStorage.getItem(key); } catch {}
-  const apply = enabled => {
-    window['ga-disable-' + GA_ID] = !enabled;
-    if (!enabled || document.querySelector('[data-ga4]')) return;
+  if (!window.applyTamanAnalytics) {
+    let currentChoice = null;
     window.dataLayer = window.dataLayer || [];
-    function gtag(){ window.dataLayer.push(arguments); }
-    window.gtag = gtag;
-    gtag('js', new Date()); gtag('config', GA_ID, { anonymize_ip: true });
-    const script = document.createElement('script'); script.async = true;
-    script.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
-    script.dataset.ga4 = 'consented'; document.head.appendChild(script);
-  };
-  apply(choice === 'granted');
+    window.gtag = window.gtag || function(){ window.dataLayer.push(arguments); };
+    window.readTamanAnalytics = () => {
+      let value = null;
+      try { value = localStorage.getItem(key); } catch {}
+      try { if (sessionStorage.getItem(vetoKey) === '1') value = 'denied'; } catch {}
+      return currentChoice || value;
+    };
+    window.applyTamanAnalytics = enabled => {
+      currentChoice = enabled ? 'granted' : 'denied';
+      window['ga-disable-' + GA_ID] = !enabled;
+      window.gtag('consent', 'update', { analytics_storage: enabled ? 'granted' : 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' });
+      let sessionSaved = false;
+      try { if (enabled) sessionStorage.removeItem(vetoKey); else sessionStorage.setItem(vetoKey, '1'); sessionSaved = true; } catch {}
+      if (enabled && !document.querySelector('[data-ga4]')) {
+        window.gtag('js', new Date()); window.gtag('config', GA_ID, { anonymize_ip: true });
+        const script = document.createElement('script'); script.async = true;
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+        script.dataset.ga4 = 'consented'; document.head.appendChild(script);
+      }
+      return sessionSaved;
+    };
+    window.gtag('consent', 'default', { analytics_storage: 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' });
+    choice = window.readTamanAnalytics();
+    window.applyTamanAnalytics(choice === 'granted');
+  } else choice = window.readTamanAnalytics();
   if (choice !== 'granted' && choice !== 'denied' && banner) banner.hidden = false;
   const current = document.querySelector('[data-current-choice]');
   if (current) current.textContent = choice === 'granted' ? 'Analitik diizinkan.' : 'Analitik tidak diaktifkan.';
   document.querySelectorAll('[data-consent]').forEach(button => button.addEventListener('click', () => {
     const enabled = button.dataset.consent === 'granted';
-    apply(enabled);
+    const sessionSaved = window.applyTamanAnalytics(enabled);
     let saved = false;
     try { localStorage.setItem(key, enabled ? 'granted' : 'denied'); saved = true; } catch {}
     if (banner) banner.hidden = saved;
     if (current) current.textContent = enabled ? 'Analitik diizinkan pada halaman ini.' : 'Analitik dinonaktifkan pada halaman ini.';
-    document.querySelectorAll('[data-consent-status]').forEach(status => { status.textContent = saved ? 'Pilihan disimpan.' : 'Pilihan berlaku pada halaman ini, tetapi tidak dapat disimpan untuk kunjungan berikutnya.'; });
+    document.querySelectorAll('[data-consent-status]').forEach(status => { status.textContent = saved && sessionSaved ? 'Pilihan disimpan.' : !enabled && sessionSaved ? 'Google Analytics dinonaktifkan untuk tab ini; penyimpanan permanen gagal. Pilihan tidak dijamin di tab atau peramban lain.' : 'Pilihan berlaku pada halaman ini; tidak dapat disimpan untuk navigasi, pemuatan ulang, tab atau peramban lain.'; });
   }));
 })();
 </script></body></html>

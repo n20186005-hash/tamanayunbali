@@ -15,3 +15,24 @@ assert.equal(missing.status, 404);
 assert.equal(missing.headers.get('X-Robots-Tag'), 'noindex, follow');
 assert.equal(await missing.text(), 'asset');
 console.log('Worker: canonical redirects, ASSETS delegation, and preserved 404 passed.');
+
+for (const path of ['/404.html', '/404', '/404/']) {
+  for (const method of ['GET', 'HEAD']) {
+    for (const query of ['', '?test=1']) {
+      const result = await worker.fetch(new Request('https://tamanayunbali.com' + path + query, { method }), env);
+      assert.equal(result.status, 404);
+      assert.equal(result.headers.get('location'), null);
+      assert.equal(result.headers.get('x-robots-tag'), 'noindex, follow');
+      assert.equal(await result.text(), method === 'HEAD' ? '' : 'asset');
+    }
+  }
+}
+const redirectingAssets = { ASSETS: { async fetch(request) {
+  return new URL(request.url).pathname === '/404.html'
+    ? Response.redirect('https://tamanayunbali.com/404/', 307)
+    : new Response('<h1>Page not found</h1>', { headers: { 'Content-Type': 'text/html' } });
+} } };
+const alias = await worker.fetch(new Request('https://tamanayunbali.com/404?x=1'), redirectingAssets);
+assert.equal(alias.status, 404);
+assert.match(await alias.text(), /Page not found/);
+console.log('Explicit 404 aliases: GET/HEAD/query and asset-redirect content passed.');
