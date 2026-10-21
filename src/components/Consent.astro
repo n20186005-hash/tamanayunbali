@@ -13,15 +13,25 @@
     window.readTamanAnalytics = () => {
       let value = null;
       try { value = localStorage.getItem(key); } catch {}
-      try { if (sessionStorage.getItem(vetoKey) === '1') value = 'denied'; } catch {}
+      try { if (sessionStorage.getItem(vetoKey) === '1') value = 'denied'; } catch { value = 'denied'; }
       return currentChoice || value;
     };
     window.applyTamanAnalytics = enabled => {
+      let sessionSaved = false;
+      try {
+        if (enabled) {
+          sessionStorage.removeItem(vetoKey);
+          if (sessionStorage.getItem(vetoKey) === '1') throw new Error('Veto retained');
+        } else sessionStorage.setItem(vetoKey, '1');
+        sessionSaved = true;
+      } catch {
+        if (enabled) {
+          try { if (sessionStorage.getItem(vetoKey) === '1') enabled = false; } catch { enabled = false; }
+        }
+      }
       currentChoice = enabled ? 'granted' : 'denied';
       window['ga-disable-' + GA_ID] = !enabled;
       window.gtag('consent', 'update', { analytics_storage: enabled ? 'granted' : 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' });
-      let sessionSaved = false;
-      try { if (enabled) sessionStorage.removeItem(vetoKey); else sessionStorage.setItem(vetoKey, '1'); sessionSaved = true; } catch {}
       if (enabled && !document.querySelector('[data-ga4]')) {
         window.gtag('js', new Date()); window.gtag('config', GA_ID, { anonymize_ip: true });
         const script = document.createElement('script'); script.async = true;
@@ -30,6 +40,11 @@
       }
       return sessionSaved;
     };
+    window.addEventListener('storage', (event) => {
+      if (event.key !== key) return;
+      if (event.newValue !== 'granted') window.applyTamanAnalytics(false);
+      window.dispatchEvent(new Event('taman-consent-change'));
+    });
     window.gtag('consent', 'default', { analytics_storage: 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' });
     choice = window.readTamanAnalytics();
     window.applyTamanAnalytics(choice === 'granted');
@@ -37,9 +52,14 @@
   if (choice !== 'granted' && choice !== 'denied' && banner) banner.hidden = false;
   const current = document.querySelector('[data-current-choice]');
   if (current) current.textContent = choice === 'granted' ? 'Analitik diizinkan.' : 'Analitik tidak diaktifkan.';
+  window.addEventListener('taman-consent-change', () => {
+    if (current) current.textContent = window.readTamanAnalytics() === 'granted' ? 'Analitik diizinkan.' : 'Analitik dinonaktifkan.';
+    document.querySelectorAll('[data-consent-status]').forEach(status => { status.textContent = 'Pilihan diperbarui setelah perubahan di tab lain.'; });
+  });
   document.querySelectorAll('[data-consent]').forEach(button => button.addEventListener('click', () => {
-    const enabled = button.dataset.consent === 'granted';
+    let enabled = button.dataset.consent === 'granted';
     const sessionSaved = window.applyTamanAnalytics(enabled);
+    enabled = window.readTamanAnalytics() === 'granted';
     let saved = false;
     try { localStorage.setItem(key, enabled ? 'granted' : 'denied'); saved = true; } catch {}
     if (banner) banner.hidden = saved;
